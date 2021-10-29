@@ -26,6 +26,12 @@
 #include <compiler.h>
 #include <dev/driver.h>
 
+/*
+    Usage concept of this driver is to have one driver instance bound to one
+    Messaging Unit Channel.  The channel binding is defined in the device tree
+    along with the peripheral base address.
+*/
+
 __BEGIN_CDECLS
 
 typedef void(*msgunit_tx_cb_t)(void);
@@ -33,15 +39,19 @@ typedef void(*msgunit_rx_cb_t)(uint32_t);
 
 struct msgunit_ops {
     struct driver_ops std;
-    status_t (*send_msg)(struct device *dev, uint32_t reg_idx, uint32_t msg);
-    status_t (*receive_msg)(struct device *dev, uint32_t reg_idx, uint32_t*dst);
-    status_t (*register_tx_callback)(struct device *dev, uint32_t idx, msgunit_tx_cb_t);
-    status_t (*register_rx_callback)(struct device *dev, uint32_t idx, msgunit_rx_cb_t);
+    status_t (*send_msg)(struct device *dev, uint32_t msg);
+    status_t (*receive_msg)(struct device *dev, uint32_t*dst);
+    status_t (*register_tx_callback)(struct device *dev, msgunit_tx_cb_t cb);
+    status_t (*register_rx_callback)(struct device *dev, msgunit_rx_cb_t cb);
+    status_t (*start)(struct device *dev);
+    status_t (*stop)(struct device *dev);
 };
 
-status_t class_msgunit_register_tx_callback(struct device *dev, uint32_t idx, msgunit_tx_cb_t cb);
-status_t class_msgunit_register_rx_callback(struct device *dev, uint32_t idx, msgunit_rx_cb_t cb);
-status_t class_msgunit_send_msg(struct device *dev, uint32_t channel, uint32_t msg);
+status_t class_msgunit_register_tx_callback(struct device *dev, msgunit_tx_cb_t cb);
+status_t class_msgunit_register_rx_callback(struct device *dev, msgunit_rx_cb_t cb);
+status_t class_msgunit_start(struct device *dev);
+status_t class_msgunit_stop(struct device *dev);
+status_t class_msgunit_send_msg(struct device *dev, uint32_t msg);
 struct device * class_msgunit_get_device_by_id(int bus_id);
 
 
