@@ -132,6 +132,9 @@ EXTRA_OBJS :=
 # any extra linker scripts to be put on the command line
 EXTRA_LINKER_SCRIPTS :=
 
+# any extra libraries to link
+EXTRA_LINK_LIBS :=
+
 # if someone defines this, the build id will be pulled into lib/version
 BUILDID ?=
 
