@@ -24,7 +24,7 @@ $(OUTELF): $(ALLMODULE_OBJS) $(LINKER_SCRIPT) $(EXTRA_LINKER_SCRIPTS)
 	$(NOECHO)$(SIZE) -t --common $(sort $(ALLMODULE_OBJS)) $(EXTRA_OBJS)
 	$(LD) $(GLOBAL_LDFLAGS) -dT $(LINKER_SCRIPT) $(addprefix -T,$(EXTRA_LINKER_SCRIPTS)) \
 		$(ALLMODULE_OBJS) $(EXTRA_OBJS) $(LIBGCC) -Map=$(OUTELF).map -o $@ \
-		$(addprefix -l,$(EXTRA_LINK_LIBS))
+		--whole-archive $(addprefix -l,$(EXTRA_LINK_LIBS))
 
 $(OUTELF).sym: $(OUTELF)
 	@echo generating symbols: $@
