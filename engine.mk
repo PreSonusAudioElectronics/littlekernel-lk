@@ -136,6 +136,9 @@ EXTRA_LINKER_SCRIPTS :=
 # any extra libraries to link
 EXTRA_LINK_LIBS :=
 
+# any extra linker file dependencies
+EXTRA_LINKER_DEPS :=
+
 # if someone defines this, the build id will be pulled into lib/version
 BUILDID ?=
 
