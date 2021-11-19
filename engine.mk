@@ -68,7 +68,8 @@ GLOBAL_COMPILEFLAGS += -W -Wall -Wno-multichar -Wno-unused-parameter -Wno-unused
 GLOBAL_COMPILEFLAGS += -fno-common
 GLOBAL_CFLAGS := --std=gnu11 -Werror-implicit-function-declaration -Wstrict-prototypes -Wwrite-strings
 #GLOBAL_CFLAGS += -Werror
-GLOBAL_CPPFLAGS := --std=c++11 -fno-exceptions -fno-rtti -fno-threadsafe-statics
+GLOBAL_CPPFLAGS := --std=c++11 -fno-exceptions -fno-rtti 
+#GLOBAL_CPPFLAGS := --std=c++11 -fno-exceptions -fno-rtti -fno-threadsafe-statics
 #GLOBAL_CPPFLAGS += -Weffc++
 GLOBAL_ASMFLAGS := -DASSEMBLY
 GLOBAL_LDFLAGS :=
@@ -131,6 +132,12 @@ EXTRA_OBJS :=
 
 # any extra linker scripts to be put on the command line
 EXTRA_LINKER_SCRIPTS :=
+
+# any extra libraries to link
+EXTRA_LINK_LIBS :=
+
+# any extra linker file dependencies
+EXTRA_LINKER_DEPS :=
 
 # if someone defines this, the build id will be pulled into lib/version
 BUILDID ?=

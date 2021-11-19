@@ -19,11 +19,14 @@ $(OUTELF).hex: $(OUTELF)
 	@echo generating hex file: $@
 	$(NOECHO)$(OBJCOPY) -O ihex $< $@
 
-$(OUTELF): $(ALLMODULE_OBJS) $(EXTRA_OBJS) $(LINKER_SCRIPT) $(EXTRA_LINKER_SCRIPTS)
+$(EXTRA_LINKER_DEPS):
+
+$(OUTELF): $(ALLMODULE_OBJS) $(LINKER_SCRIPT) $(EXTRA_LINKER_SCRIPTS) $(EXTRA_LINKER_DEPS)
 	@echo linking $@
 	$(NOECHO)$(SIZE) -t --common $(sort $(ALLMODULE_OBJS)) $(EXTRA_OBJS)
-	$(NOECHO)$(LD) $(GLOBAL_LDFLAGS) -dT $(LINKER_SCRIPT) $(addprefix -T,$(EXTRA_LINKER_SCRIPTS)) \
-		$(ALLMODULE_OBJS) $(EXTRA_OBJS) $(LIBGCC) -Map=$(OUTELF).map -o $@
+	$(LD) $(GLOBAL_LDFLAGS) -dT $(LINKER_SCRIPT) $(addprefix -T,$(EXTRA_LINKER_SCRIPTS)) \
+		$(ALLMODULE_OBJS) $(EXTRA_OBJS) $(LIBGCC) -Map=$(OUTELF).map -o $@ \
+		--whole-archive $(addprefix -l,$(EXTRA_LINK_LIBS))
 
 $(OUTELF).sym: $(OUTELF)
 	@echo generating symbols: $@
