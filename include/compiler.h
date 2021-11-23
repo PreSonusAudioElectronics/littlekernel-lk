@@ -36,7 +36,9 @@
 #define __SECTION(x) __attribute((section(x)))
 #define __PURE __attribute((pure))
 #define __CONST __attribute((const))
-#define __NO_RETURN __attribute__((noreturn))
+#ifndef __NO_RETURN
+  #define __NO_RETURN __attribute__((noreturn))
+#endif
 #define __MALLOC __attribute__((malloc))
 #define __WEAK __attribute__((weak))
 #define __GNU_INLINE __attribute__((gnu_inline))
@@ -127,12 +129,16 @@
 #define __WEAK_ALIAS(x) __attribute__((weak, alias(x)))
 #define __ALIAS(x) __attribute__((alias(x)))
 
-#define __EXPORT __attribute__ ((visibility("default")))
+#ifndef __EXPORT
+  #define __EXPORT __attribute__ ((visibility("default")))
+#endif
 #define __LOCAL  __attribute__ ((visibility("hidden")))
 
 #define __THREAD __thread
 
-#define __offsetof(type, field) __builtin_offsetof(type, field)
+#ifndef __offsetof
+  #define __offsetof(type, field) __builtin_offsetof(type, field)
+#endif
 
 #define containerof(ptr, type, member) \
     ((type *)((addr_t)(ptr) - offsetof(type, member)))
@@ -161,7 +167,9 @@
 
 /* TODO: add type check */
 #define countof(a) (sizeof(a) / sizeof((a)[0]))
-#define ARRAY_SIZE(x) countof(x)
+#ifndef ARRAY_SIZE
+  #define ARRAY_SIZE(x) countof(x)
+#endif
 
 /* CPP header guards */
 #ifdef __cplusplus
