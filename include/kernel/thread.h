@@ -52,6 +52,8 @@ __BEGIN_CDECLS;
 #endif
 #endif
 
+#define THREAD_TLS_BASE_COUNT (0)
+
 enum thread_state {
     THREAD_SUSPENDED = 0,
     THREAD_READY,
@@ -65,6 +67,7 @@ typedef int (*thread_start_routine)(void *arg);
 
 /* thread local storage */
 enum thread_tls_list {
+    kThreadTlsBaseCount = THREAD_TLS_BASE_COUNT,
 #ifdef WITH_LIB_UTHREAD
     TLS_ENTRY_UTHREAD,
 #endif
