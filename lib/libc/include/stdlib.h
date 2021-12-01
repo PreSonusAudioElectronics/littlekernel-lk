@@ -42,8 +42,13 @@ unsigned long long atoull(const char *num);
 long strtol(const char *nptr, char **endptr, int base);
 long long strtoll(const char *nptr, char **endptr, int base);
 
+#ifndef MIN
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+
+#ifndef MAX
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#endif
 
 #define ROUNDUP(a, b) (((a) + ((b)-1)) & ~((b)-1))
 #define ROUNDDOWN(a, b) ((a) & ~((b)-1))
