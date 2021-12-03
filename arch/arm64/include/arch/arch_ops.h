@@ -89,6 +89,13 @@ static inline bool arch_fiqs_disabled(void)
     return !!state;
 }
 
+static inline bool arch_in_int_handler(void)
+{
+    /* set by interrupt glue to track that the cpu is inside a handler */
+    extern bool __arm_in_handler;
+    return __arm_in_handler;
+}
+
 #define mb()        __asm__ volatile("dsb sy" : : : "memory")
 #define rmb()       __asm__ volatile("dsb ld" : : : "memory")
 #define wmb()       __asm__ volatile("dsb st" : : : "memory")
