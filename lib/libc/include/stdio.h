@@ -60,9 +60,12 @@ __BEGIN_CDECLS
 #endif
 #endif
 
+#ifndef FILE
 typedef struct FILE {
     io_handle_t *io;
 } FILE;
+#define __FILE_defined
+#endif
 
 // copied from aarch64-elf stdio.h
 typedef _fpos_t fpos_t;
