@@ -127,17 +127,7 @@ add sp, sp, #32
     msr daifclr, #1 /* reenable fiqs once elr and spsr have been saved */
     mov x0, sp
 
-    /* track that we're inside an irq handler */
-    mov     x2, __arm_in_handler
-    mov     x1, #1
-    str     x1, [x2]
-
     bl  arm64_platform_irq
-    
-    /* clear the irq handler status */
-    mov     x1, __arm_in_handler
-    mov     x2, #0
-    str     x2, [x1]
 
     cbz x0, .Lirq_exception_no_preempt\@
     bl  thread_preempt

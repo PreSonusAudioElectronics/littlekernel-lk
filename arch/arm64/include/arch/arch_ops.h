@@ -89,11 +89,19 @@ static inline bool arch_fiqs_disabled(void)
     return !!state;
 }
 
+
 static inline bool arch_in_int_handler(void)
 {
-    /* set by interrupt glue to track that the cpu is inside a handler */
-    extern bool __arm_in_handler;
-    return __arm_in_handler;
+    /*!
+     * \brief All we can do in AARCH64 is say what exception level we are at
+     * and what exception level we came from.  This does not correlate 
+     * directly with whether we are in an interrupt handler.
+     * 
+     * Therefore we just say "nope"
+     * 
+     */
+
+    return false;
 }
 
 #define mb()        __asm__ volatile("dsb sy" : : : "memory")
