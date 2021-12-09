@@ -30,9 +30,78 @@
 
 __BEGIN_CDECLS
 
+#ifndef __VALIST
+#ifdef __GNUC__
+#define __VALIST __gnuc_va_list
+#else
+#define __VALIST char*
+#endif
+#endif
+
+/* This must match definition in <wchar.h> */
+#ifndef WCHAR_MIN
+#ifdef __WCHAR_MIN__
+#define WCHAR_MIN (__WCHAR_MIN__)
+#elif defined(__WCHAR_UNSIGNED__) || (L'\0' - 1 > 0)
+#define WCHAR_MIN (0 + L'\0')
+#else
+#define WCHAR_MIN (-0x7fffffff - 1 + L'\0')
+#endif
+#endif
+
+/* This must match definition in <wchar.h> */
+#ifndef WCHAR_MAX
+#ifdef __WCHAR_MAX__
+#define WCHAR_MAX (__WCHAR_MAX__)
+#elif defined(__WCHAR_UNSIGNED__) || (L'\0' - 1 > 0)
+#define WCHAR_MAX (0xffffffffu + L'\0')
+#else
+#define WCHAR_MAX (0x7fffffff + L'\0')
+#endif
+#endif
+
+#ifndef FILE
 typedef struct FILE {
     io_handle_t *io;
 } FILE;
+#define __FILE_defined
+#endif
+
+// copied from aarch64-elf stdio.h
+typedef _fpos_t fpos_t;
+void	_EXFUN(clearerr, (FILE *));
+int	_EXFUN(ferror, (FILE *));
+int	_EXFUN(fgetc, (FILE *));
+int	_EXFUN(fgetpos, (FILE *__restrict, fpos_t *__restrict));
+char *  _EXFUN(fgets, (char *__restrict, int, FILE *__restrict));
+FILE *	_EXFUN(freopen, (const char *__restrict, const char *__restrict, FILE *__restrict));
+int	_EXFUN(fscanf, (FILE *__restrict, const char *__restrict, ...)
+               _ATTRIBUTE ((__format__ (__scanf__, 2, 3))));
+int	_EXFUN(fsetpos, (FILE *, const fpos_t *));
+char *  _EXFUN(fgets, (char *__restrict, int, FILE *__restrict));
+void    _EXFUN(perror, (const char *));
+char *  _EXFUN(gets, (char *));
+int	_EXFUN(putc, (int, FILE *));
+int	_EXFUN(remove, (const char *));
+int	_EXFUN(rename, (const char *, const char *));
+void	_EXFUN(rewind, (FILE *));
+int	_EXFUN(scanf, (const char *__restrict, ...)
+               _ATTRIBUTE ((__format__ (__scanf__, 1, 2))));
+void	_EXFUN(setbuf, (FILE *__restrict, char *__restrict));
+int	_EXFUN(setvbuf, (FILE *__restrict, char *__restrict, int, size_t));
+FILE *	_EXFUN(tmpfile, (void));
+char *	_EXFUN(tmpnam, (char *));
+int	_EXFUN(ungetc, (int, FILE *));
+int	_EXFUN(vfscanf, (FILE *__restrict, const char *__restrict, __VALIST)
+               _ATTRIBUTE ((__format__ (__scanf__, 2, 0))));
+int	_EXFUN(vscanf, (const char *, __VALIST)
+               _ATTRIBUTE ((__format__ (__scanf__, 1, 0))));
+int	_EXFUN(vsscanf, (const char *__restrict, const char *__restrict, __VALIST)
+               _ATTRIBUTE ((__format__ (__scanf__, 2, 0))));
+
+
+
+
 
 extern FILE __stdio_FILEs[];
 
