@@ -55,15 +55,21 @@ struct gpio_desc {
     unsigned nr;
 };
 
-struct gpio_controller {
+
+struct gpio_controller 
+{
+    int bus_id;
     struct device *dev;
     unsigned base;
     unsigned count;
     struct list_node node;
     size_t private_size;
-    char private[];
+    char _private[];
 };
-#define gpio_ctrl_to_host(_ctrl) ((void *) (&_ctrl->private[0]))
+
+#define gpio_ctrl_to_host(_ctrl) ((void *) (&_ctrl->_private[0]))
+
+__BEGIN_CDECLS
 
 struct gpio_controller * gpio_controller_add(struct device *, unsigned, size_t);
 void gpio_controller_remove(struct gpio_controller *);
