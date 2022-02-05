@@ -40,6 +40,7 @@ typedef enum _sai_cb_evt {
     SAI_EVENT_ERROR,                /*!< Hits some error(s) */
     SAI_EVENT_ERATE_CHANGE,         /*!< Estimated rate change detected */
     SAI_EVENT_SILENCE,              /*!< Silence injection */
+    SAI_EVENT_DATA_RDY,
     SAI_EVENT_MAX,                  /*!< Number of events */
 } sai_cb_evt_t;
 
@@ -125,6 +126,8 @@ struct sai_ops {
     status_t (*rx_en_cnt)(struct device *dev, bool en);
     status_t (*read)(struct device *dev, void *buf, size_t len);
     status_t (*rx_set_callback)(struct device *device, sai_cb_t cb, void *cookie);
+    int (*read_nonblock)(struct device *dev, void *buf, size_t max_len);
+    size_t (*rx_get_data_available)(struct device *dev);
 };
 
 __BEGIN_CDECLS
@@ -144,6 +147,9 @@ status_t class_sai_get_counters(struct device *dev,
 status_t class_sai_en_counters(struct device *dev, bool en, bool is_read);
 status_t class_sai_set_callback(struct device *dev, sai_cb_t cb,
                                                 void *cookie, bool is_read);
+int class_sai_read_nonblock(struct device *dev, void *buf, size_t max_len);
+size_t class_sai_rx_get_data_available(struct device *dev);
+
 __END_CDECLS
 
 #endif /* __DEV_CLASS_SAI_H */
