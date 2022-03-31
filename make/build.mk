@@ -24,6 +24,7 @@ $(EXTRA_LINKER_DEPS):
 $(OUTELF): $(ALLMODULE_OBJS) $(LINKER_SCRIPT) $(EXTRA_LINKER_SCRIPTS) $(EXTRA_LINKER_DEPS)
 	@echo linking $@
 	$(NOECHO)$(SIZE) -t --common $(sort $(ALLMODULE_OBJS)) $(EXTRA_OBJS)
+	@echo "pwd: ${PWD}\n"
 	$(LD) $(GLOBAL_LDFLAGS) -dT $(LINKER_SCRIPT) $(addprefix -T,$(EXTRA_LINKER_SCRIPTS)) \
 		$(ALLMODULE_OBJS) $(EXTRA_OBJS) $(LIBGCC) -Map=$(OUTELF).map -o $@ \
 		--whole-archive $(addprefix -l,$(EXTRA_LINK_LIBS))
