@@ -154,3 +154,26 @@ status_t class_sai_set_callback(struct device *dev, sai_cb_t cb,
     return ERR_NOT_SUPPORTED;
 
 }
+
+int class_sai_read_nonblock(struct device *dev, void *buf, size_t max_len)
+{
+    struct sai_ops *ops = device_get_driver_ops(dev, struct sai_ops, std);
+
+    if (!ops)
+        return ERR_NOT_CONFIGURED;
+    
+    if (!buf)
+        return ERR_GENERIC;
+    
+    return ops->read_nonblock(dev, buf, max_len);
+}
+
+size_t class_sai_rx_get_data_available(struct device *dev)
+{
+    struct sai_ops *ops = device_get_driver_ops(dev, struct sai_ops, std);
+
+    if (!ops)
+        return ERR_NOT_CONFIGURED;
+    
+    return ops->rx_get_data_available(dev);
+}
