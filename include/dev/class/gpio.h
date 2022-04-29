@@ -41,6 +41,7 @@ struct gpio_ops {
     int (*get_open_drain)(struct device *dev, unsigned offset);
     int (*set_open_drain)(struct device *dev, unsigned offset, int value);
     int (*get_gpio_desc)(struct device *dev, struct gpio_desc *desc, struct fdt_args *args);
+    int (*get_io_base)(struct device *dev, void **io_base);
 };
 
 #define dev_to_gpio_ops(dev) ((struct gpio_ops *)(dev->driver->ops))
