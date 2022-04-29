@@ -89,6 +89,15 @@ int gpio_desc_set_value(struct gpio_desc *, unsigned);
 int gpio_desc_set_open_drain(struct gpio_desc *, unsigned);
 int gpio_desc_get_open_drain(struct gpio_desc *);
 
+/*!
+ * \brief Search registered gpio controllers for one with this name.
+ * If found, return a pointer to it, else return NULL
+ * 
+ * \param name The name to match
+ * \return struct gpio_controller* a pointer to the controller or NULL
+ */
+struct gpio_controller *gpio_controller_find_by_name (const char *name);
+
 __END_CDECLS
 
 #endif /* __DEV_CLASS_GPIO_H */
