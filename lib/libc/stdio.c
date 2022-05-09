@@ -119,7 +119,7 @@ int fprintf(FILE *fp, const char *fmt, ...)
     return err;
 }
 
-#define LK_USE_PEP_PRINTF 
+#define LK_USE_PEP_PRINTF
 #ifdef LK_USE_PEP_PRINTF
 int printf (const char *fmt, ...)
 {
@@ -128,17 +128,19 @@ int printf (const char *fmt, ...)
 
     va_start (ap, fmt);
     getPrintLock ();
-    err = vprintf (fmt, ap);
+    err = vprintf_ (fmt, ap);
     releasePrintLock ();
-    va_end (ap);
+    va_end(ap);
+
     return err;
 }
 
 int vprintf(const char *fmt, va_list ap)
 {
     getPrintLock ();
-    return vprintf (fmt, ap);
+    int ret = vprintf_(fmt, ap);
     releasePrintLock ();
+    return ret;
 }
 
 #else
