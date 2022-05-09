@@ -119,8 +119,7 @@ int fprintf(FILE *fp, const char *fmt, ...)
     return err;
 }
 
-#define LK_USE_PEP_PRINTF
-#ifdef LK_USE_PEP_PRINTF
+#ifdef LK_USE_PRINT_LOCK
 int printf (const char *fmt, ...)
 {
     va_list ap;
@@ -128,7 +127,7 @@ int printf (const char *fmt, ...)
 
     va_start (ap, fmt);
     getPrintLock ();
-    err = vprintf_ (fmt, ap);
+    err = vfprintf (stdout, fmt, ap);
     releasePrintLock ();
     va_end(ap);
 
@@ -138,7 +137,7 @@ int printf (const char *fmt, ...)
 int vprintf(const char *fmt, va_list ap)
 {
     getPrintLock ();
-    int ret = vprintf_(fmt, ap);
+    int ret = vfprintf (stdout, fmt, ap);
     releasePrintLock ();
     return ret;
 }
