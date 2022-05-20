@@ -397,7 +397,8 @@ static status_t gic_send_ipi(cpu_mask_t target, mp_ipi_t ipi)
     /* filter out targets outside of the range of cpus we care about */
     target &= (cpu_mask_t)(((1UL << arch_max_num_cpus()) - 1));
     if (target != 0) {
-        LTRACEF("target 0x%x, gic_ipi %u\n", target, gic_ipi_num);
+        /* This LTRACEF call results in the system hanging if tracing is turn on for this file */
+        // LTRACEF("target 0x%x, gic_ipi %u\n", target, gic_ipi_num);
         arm_gic_sgi(gic_ipi_num, ARM_GIC_SGI_FLAG_NS, target);
     }
 
