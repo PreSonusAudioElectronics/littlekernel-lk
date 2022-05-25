@@ -30,7 +30,7 @@
 #include <lib/appargs.h>
 #include <dev/class/gpio.h>
 
-#define LOCAL_TRACE 0
+#define LOCAL_TRACE 1
 #include <libfdt.h>
 static struct list_node gpio_controller_list = LIST_INITIAL_VALUE(gpio_controller_list);
 static spin_lock_t gpio_controller_list_lock = SPIN_LOCK_INITIAL_VALUE;
@@ -69,6 +69,29 @@ void gpio_controller_remove(struct gpio_controller *controller)
     spin_unlock_irqrestore(&gpio_controller_list_lock, lock_state);
 
     free(controller);
+}
+
+struct gpio_controller *gpio_controller_find_by_name (const char *name)
+{
+    struct gpio_controller *ret = NULL;
+    struct gpio_controller *controller;
+    spin_lock_saved_state_t lock_state;
+
+    if (!name)
+        return NULL;
+    
+    spin_lock_irqsave(&gpio_controller_list_lock, lock_state);
+    list_for_every_entry (&gpio_controller_list, controller, struct gpio_controller, node)
+    {
+        if (0 == strncmp (controller->dev->name, name, 64))
+        {
+            ret = controller;
+            break;
+        }
+    }
+    spin_unlock_irqrestore(&gpio_controller_list_lock, lock_state);
+
+    return ret;
 }
 
 status_t gpio_get_desc(struct device *dev,

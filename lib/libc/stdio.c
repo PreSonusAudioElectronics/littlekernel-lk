@@ -27,6 +27,8 @@
 #include <sys/types.h>
 #include <platform/debug.h>
 
+#include <os/pepstdio.h>
+
 #define DEFINE_STDIO_DESC(id)   \
     [(id)]  = {                 \
         .io = &console_io,      \
@@ -117,6 +119,30 @@ int fprintf(FILE *fp, const char *fmt, ...)
     return err;
 }
 
+#ifdef LK_USE_PRINT_LOCK
+int printf (const char *fmt, ...)
+{
+    va_list ap;
+    int err;
+
+    va_start (ap, fmt);
+    getPrintLock ();
+    err = vfprintf (stdout, fmt, ap);
+    releasePrintLock ();
+    va_end(ap);
+
+    return err;
+}
+
+int vprintf(const char *fmt, va_list ap)
+{
+    getPrintLock ();
+    int ret = vfprintf (stdout, fmt, ap);
+    releasePrintLock ();
+    return ret;
+}
+
+#else
 #if !DISABLE_DEBUG_OUTPUT
 int printf(const char *fmt, ...)
 {
@@ -134,4 +160,6 @@ int vprintf(const char *fmt, va_list ap)
 {
     return vfprintf(stdout, fmt, ap);
 }
+#endif
+
 #endif
