@@ -176,8 +176,13 @@ struct device_config_data {
     /* DMA controller instance */
     struct device_cfg_dma_device *dma_device_cfg;
 
-    /* Per driver private area */
-    char private[];
+
+    /*  Per driver private area
+        This was changed from "private" to make
+        it possible to compile as C++.
+        Watch for build failured (non founc so far)
+     */
+    char priv_data[];
 };
 
 
