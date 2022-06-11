@@ -36,6 +36,7 @@
 #include <sys/types.h>
 #include <list.h>
 #include <dev/class/gpio.h> /* struct gpio_desc */
+#include <stdio.h>
 
 struct board {
     const char *name;
@@ -80,6 +81,19 @@ struct device_cfg_clk {
     uint32_t ccgr_root;
     uint32_t rate;
 };
+
+static inline void print_dev_cfg_clk (struct device_cfg_clk *cfg)
+{
+    if (!cfg) return;
+    printf("Clock config follows:\n");
+    printf("root_clk_idx: %u\n", cfg->root_clk_idx);
+    printf("root_clk_mux_idx: %u\n", cfg->root_clk_mux_idx);
+    printf("pre_divider: %u\n", cfg->pre_divider);
+    printf("post_divider: %u\n", cfg->post_divider);
+    printf("ccgr: %u\n", cfg->ccgr);
+    printf("ccgr_root: %u\n", cfg->ccgr_root);
+    printf("rate: %u\n", cfg->rate);
+}
 
 struct device_cfg_clks {
     struct device_cfg_clk *cfg;
