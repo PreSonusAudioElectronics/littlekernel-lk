@@ -58,6 +58,60 @@ status_t register_int_handler(unsigned int vector, int_handler handler, void *ar
     return NO_ERROR;
 }
 
+status_t unregister_int_handler(unsigned int vector, int_handler handler)
+{
+    if (!is_valid_interrupt(vector, 0)) {
+        return ERR_INVALID_ARGS;
+    }
+
+    struct int_handler_struct *h, *hprev;
+    status_t ret = ERR_NOT_FOUND;
+
+    spin_lock_saved_state_t state;
+    spin_lock_save(&lock, &state, SPIN_LOCK_FLAG_INTERRUPTS);
+
+    h = pdev_get_int_handler(vector);
+    if (!h)
+    {
+        goto exit;
+    }
+
+    if (handler) 
+    {
+        // search list for this handler
+        hprev = NULL;
+        do
+        {
+            if (h->handler == handler)
+            {
+                ret = NO_ERROR;
+
+                // make prev point to this next
+                if (hprev)
+                {
+                    hprev->next = h->next;
+                }
+
+                // free this node
+                h->arg = NULL;
+                h->handler = NULL;
+                h->next = NULL;
+            }
+
+            if (h->next)
+            {
+                hprev = h;
+                h = (struct int_handler_struct*) h->next;
+            }
+            
+        } while (h->next);
+    }
+
+exit:
+    spin_unlock_restore(&lock, state, SPIN_LOCK_FLAG_INTERRUPTS);
+    return ret;
+}
+
 static struct int_handler_struct *pdev_get_free_chained_int_handler(void)
 {
     for (unsigned i = 0; i < PDEV_MAX_CHAINED_INT; i++) {
