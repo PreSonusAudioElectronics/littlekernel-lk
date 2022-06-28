@@ -94,6 +94,11 @@ dyndbg_print(level, x, ##__VA_ARGS__)
 void _panic(void *caller, const char *fmt, ...) __PRINTFLIKE(2, 3) __NO_RETURN;
 #define panic(x...) _panic(__GET_CALLER(), x)
 
+/*!
+ * \brief optional function to call on panic before calling LK stuff
+ */
+void register_panic_handler (void (*handler)(void));
+
 #define PANIC_UNIMPLEMENTED panic("%s unimplemented\n", __PRETTY_FUNCTION__)
 
 #define BUG_ON(cond) do { if (cond) panic("BUG_ON: "#cond"\n");} while(0)
