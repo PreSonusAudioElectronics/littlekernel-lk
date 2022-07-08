@@ -9,8 +9,10 @@ MODULE_SRCS += \
 	$(LOCAL_DIR)/page_alloc.c
 
 ifeq ($(WITH_CPP_SUPPORT),true)
+ifeq ($(WITH_EXT_NEW_DELETE),false)
 MODULE_SRCS += \
 	$(LOCAL_DIR)/new.cpp
+endif
 endif
 
 # pick a heap implementation
