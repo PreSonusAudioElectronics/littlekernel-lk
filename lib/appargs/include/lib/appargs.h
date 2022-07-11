@@ -177,7 +177,7 @@ struct device_config_data {
     struct device_cfg_dma_device *dma_device_cfg;
 
     /* Per driver private area */
-    char private[];
+    char priv_data[];
 };
 
 
