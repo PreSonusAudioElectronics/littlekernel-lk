@@ -37,6 +37,8 @@ static void shell_entry(const struct app_descriptor *app, void *args)
 APP_START(shell)
 .init = shell_init,
  .entry = shell_entry,
+ .stack_size = 8192,
+ .flags = APP_FLAG_CUSTOM_STACK_SIZE,
 #ifdef SHELL_WITH_NO_AUTOSTART
  .flags = APP_FLAG_DONT_START_ON_BOOT,
 #endif

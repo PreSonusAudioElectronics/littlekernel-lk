@@ -52,6 +52,8 @@
 static spin_lock_t print_spin_lock;
 static struct list_node print_callbacks = LIST_INITIAL_VALUE(print_callbacks);
 
+static bool dputc_spin_lock_initialized = false;
+
 #if CONSOLE_HAS_INPUT_BUFFER
 #ifndef CONSOLE_BUF_LEN
 #define CONSOLE_BUF_LEN 256
@@ -96,7 +98,11 @@ void __kernel_serial_write(const char* str, size_t len)
 #if WITH_LIB_DEBUGLOG
     static spin_lock_t dputc_spin_lock;
 
-    arch_spin_lock_init(&dputc_spin_lock);
+    if (!dputc_spin_lock_initialized)
+    {
+        arch_spin_lock_init(&dputc_spin_lock);
+        dputc_spin_lock_initialized = true;
+    }
 
     spin_lock(&dputc_spin_lock);
 

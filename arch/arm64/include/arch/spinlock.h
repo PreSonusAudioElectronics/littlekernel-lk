@@ -36,6 +36,7 @@ struct spin_lock_elem;
 typedef struct spin_lock {
     unsigned long lock; /* MUST be first parameter */
     struct spin_lock_elem *elem;
+    bool registered;
 } spin_lock_t;
 
 typedef struct spin_lock_elem {
@@ -54,6 +55,7 @@ typedef struct spin_lock_elem {
 { \
     .lock = 0, \
     .elem = NULL, \
+    .registered = false \
 }
 #endif
 
@@ -123,13 +125,15 @@ static inline int arch_spin_trylock_and_ts(spin_lock_t *lock)
 
 static inline void arch_spin_unlock_and_ts(spin_lock_t *lock)
 {
+    uint64_t ts;
+    uint64_t delta;
     spin_lock_elem_t *elem = lock->elem;
 
     if (!elem)
         goto skip;
 
-    uint64_t ts = current_time_hires();
-    uint64_t delta = ts - elem->ts;
+    ts = current_time_hires();
+    delta = ts - elem->ts;
 
     if (delta > elem->max) {
         elem->max = delta;
