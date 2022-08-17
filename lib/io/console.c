@@ -52,8 +52,6 @@
 static spin_lock_t print_spin_lock;
 static struct list_node print_callbacks = LIST_INITIAL_VALUE(print_callbacks);
 
-static bool dputc_spin_lock_initialized = false;
-
 #if CONSOLE_HAS_INPUT_BUFFER
 #ifndef CONSOLE_BUF_LEN
 #define CONSOLE_BUF_LEN 256
@@ -64,31 +62,21 @@ cbuf_t console_input_cbuf;
 static uint8_t console_cbuf_buf[CONSOLE_BUF_LEN];
 #endif // CONSOLE_HAS_INPUT_BUFFER
 
-/*
-    Littlekernel originally use spin_lock_irqsave for both 
-    __kernel_console_write () and __kernel_serial_write ().
-
-    This leaves interrupts disabled far too often and messes
-    up realtime critical things like for example SAI interrupts.
-
-    We have changed them to use bare spin_locks without disabling
-    interrupts.
-*/
-
 void __kernel_console_write(const char* str, size_t len)
 {
     print_callback_t *cb;
 
     /* print to any registered loggers */
     if (!list_is_empty(&print_callbacks)) {
-        spin_lock(&print_spin_lock);
+        spin_lock_saved_state_t state;
+        spin_lock_save(&print_spin_lock, &state, PRINT_LOCK_FLAGS);
 
         list_for_every_entry(&print_callbacks, cb, print_callback_t, entry) {
             if (cb->print)
                 cb->print(cb, str, len);
         }
 
-        spin_unlock(&print_spin_lock);
+        spin_unlock_restore(&print_spin_lock, state, PRINT_LOCK_FLAGS);
     }
 }
 
@@ -98,18 +86,15 @@ void __kernel_serial_write(const char* str, size_t len)
 #if WITH_LIB_DEBUGLOG
     static spin_lock_t dputc_spin_lock;
 
-    if (!dputc_spin_lock_initialized)
-    {
-        arch_spin_lock_init(&dputc_spin_lock);
-        dputc_spin_lock_initialized = true;
-    }
+    arch_spin_lock_init(&dputc_spin_lock);
 
-    spin_lock(&dputc_spin_lock);
+    spin_lock_saved_state_t state;
+    spin_lock_irqsave(&dputc_spin_lock, state);
 
     /* write out the serial port */
     platform_dputs_irq(str, len);
 
-    spin_unlock(&dputc_spin_lock);
+    spin_unlock_irqrestore(&dputc_spin_lock, state);
 #else
     platform_dputs(str, len);
 #endif
