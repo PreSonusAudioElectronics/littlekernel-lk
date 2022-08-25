@@ -44,6 +44,11 @@ void operator delete(void *p)
     return free(p);
 }
 
+void operator delete(void *p, unsigned long)
+{
+    return free(p);
+}
+
 void operator delete[](void *p)
 {
     return free(p);
