@@ -105,6 +105,24 @@ static inline void spin_unlock_restore(
     arch_interrupt_restore(old_state, flags);
 }
 
+static inline bool spin_trylock_irqsave (spin_lock_t *lock, spin_lock_saved_state_t *statep,
+    unsigned iterations)
+{
+    unsigned tries = 0;
+    int status = -1;
+    arch_interrupt_save (statep, SPIN_LOCK_FLAG_INTERRUPTS);
+    while (tries < iterations && status != 0)
+    {
+        status = spin_trylock (lock);
+        tries++;
+    }
+    if (status)
+    {
+        arch_interrupt_restore (*statep, SPIN_LOCK_FLAG_INTERRUPTS);
+    }
+    return (status == 0);
+}
+
 /* hand(ier) routines */
 #define spin_lock_irqsave(lock, statep) spin_lock_save(lock, &(statep), SPIN_LOCK_FLAG_INTERRUPTS)
 #define spin_unlock_irqrestore(lock, statep) spin_unlock_restore(lock, statep, SPIN_LOCK_FLAG_INTERRUPTS)

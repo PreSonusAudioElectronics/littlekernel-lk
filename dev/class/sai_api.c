@@ -23,6 +23,9 @@
 
 #include <err.h>
 #include <dev/class/sai.h>
+#include <trace.h>
+
+#define LOCAL_TRACE 1
 
 #define SAI_CLASS_CONS(func) \
 status_t class_sai_##func(struct device *dev, bool is_read) \
@@ -176,4 +179,17 @@ size_t class_sai_rx_get_data_available(struct device *dev)
         return ERR_NOT_CONFIGURED;
     
     return ops->rx_get_data_available(dev);
+}
+
+status_t class_sai_shutdown(struct device *dev)
+{
+    struct sai_ops *ops = device_get_driver_ops(dev, struct sai_ops, std);
+
+    if (!ops)
+    {
+        TRACEF ("Failed to get the ops!\n");
+        return ERR_NOT_CONFIGURED;
+    }
+
+    return ops->shutdown (dev);
 }

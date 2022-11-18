@@ -115,6 +115,7 @@ inline void spin_lock_register(spin_lock_t *lock)
     elem->lock = lock;
     elem->caller = __GET_CALLER();
     elem->magic = SPIN_LOCK_MAGIC;
+    lock->registered = true;
 }
 
 static int cmd_spinlockstats(int argc, const cmd_args *argv)
@@ -293,12 +294,21 @@ void kernel_evlog_add(uintptr_t id, uintptr_t arg0, uintptr_t arg1)
 
 static void kevdump_cb(const uintptr_t *i)
 {
+    thread_t *from;
+    thread_t *to;
+    
     switch (i[1] & 0xffff) {
         case KERNEL_EVLOG_CONTEXT_SWITCH:
-            printf("%lu.%lu: context switch from %p to %p\n", i[0], i[1] >> 16, (void *)i[2], (void *)i[3]);
+            // printf("%lu.%lu: context switch from %p to %p\n", i[0], i[1] >> 16, (void *)i[2], (void *)i[3]);
+            from = (thread_t*) i[2];
+            to = (thread_t*) i [3];
+            printf("%lu.%lu: context switch from %s to %s\n", i[0], i[1] >> 16, 
+                from->name, to->name);
             break;
         case KERNEL_EVLOG_PREEMPT:
-            printf("%lu.%lu: preempt on thread %p\n", i[0], i[1] >> 16, (void *)i[2]);
+            // printf("%lu.%lu: preempt on thread %p\n", i[0], i[1] >> 16, (void *)i[2]);
+            from = (thread_t*) (i[2]);
+            printf("%lu.%lu: preempt on thread %s\n", i[0], i[1] >> 16, from->name);
             break;
         case KERNEL_EVLOG_TIMER_TICK:
             printf("%lu.%lu: timer tick\n", i[0], i[1] >> 16);

@@ -67,6 +67,7 @@ status_t get_interrupt_config(unsigned int vector,
 typedef enum handler_return (*int_handler)(void *arg);
 
 status_t register_int_handler(unsigned int vector, int_handler handler, void *arg);
+status_t unregister_int_handler(unsigned int vector, int_handler handler);
 
 // These return the [base, max] range of vectors that can be used with zx_interrupt syscalls
 // This api will need to evolve if valid vector ranges later are not contiguous

@@ -32,6 +32,8 @@
 #include <platform/debug.h>
 #include <kernel/spinlock.h>
 
+static void (*on_panic)(void) = NULL;
+
 void spin(uint32_t usecs)
 {
     lk_bigtime_t start = current_time_hires();
@@ -40,8 +42,21 @@ void spin(uint32_t usecs)
         ;
 }
 
+void register_panic_handler (void (*handler)(void))
+{
+    if (handler)
+    {
+        on_panic = handler;
+    }
+}
+
 void _panic(void *caller, const char *fmt, ...)
 {
+    if (on_panic)
+    {
+        on_panic ();
+    }
+
     printf("panic (caller %p): ", caller);
 
     va_list ap;

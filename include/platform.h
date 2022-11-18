@@ -54,6 +54,9 @@ lk_bigtime_t current_time_hires(void);
 /* super early platform initialization, before almost everything */
 void platform_early_init(void);
 
+/* how many cpus currently enabled? */
+unsigned platform_num_enabled_cpus(void);
+
 /* later init, after the kernel has come up */
 void platform_init(void);
 
